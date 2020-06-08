@@ -22,41 +22,35 @@ def on_disconnect(client, userdata, flags, rc=0):
 
 
 def on_message(client, userdata, msg):
-    # print(msg.topic + " " + str(msg.payload))
-    # find name of collected data, remove rest of topic name
-    topic_name = re.findall('[a-z]{1,}$', msg.topic)
-    # convert from list to sting
-    print(''.join(topic_name))
     # gather data from MQTT, remove unwanted data, convert from list to string
     collect_data = re.findall('[0-9.]{1,}', str(msg.payload))
     # convert collected data from string to rounded integer
     sensor_data = round(float(''.join(collect_data)))
     print(sensor_data)
-    print(i)
-
-
+    sensor_results[key] = sensor_data
 
 
 sensors = config.sensors
 broker = config.mqtt_broker
+sensor_results = {}
+
 
 client = mqtt.Client()
 
-#client.on_connect = on_connect
-#client.on_disconnect = on_disconnect
-# client.on_log=on_log
 client.on_message = on_message
-
-# print("connecting to broker, ", broker)
 client.connect(broker)
 client.loop_start()
-for i in sensors:
-    client.subscribe(i)
+
+for key in sensors:
+    print(key)
+    client.subscribe(sensors[key])
+    time.sleep(.5)
 
 
-time.sleep(.5)
 client.loop_stop()
 client.disconnect()
+
+print(sensor_results)
 
 celsius = int(10)
 humid = int(55)
