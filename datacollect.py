@@ -2,7 +2,7 @@ import paho.mqtt.client as mqtt
 import time
 import config as config
 import re
-from dbconnect import write_to_outside
+from dbconnect import write_to_outside, write_to_living_room
 
 
 # def on_log(client, userdata, level, buf):
@@ -46,15 +46,10 @@ for key in sensors:
     client.subscribe(sensors[key])
     time.sleep(.5)
 
-
 client.loop_stop()
 client.disconnect()
 
-print(sensor_results)
 
-celsius = int(10)
-humid = int(55)
-pressure = int(1234)
-
-#write_to_outside(celsius, humid, pressure)
+write_to_outside(sensor_results['outside_celsius'], sensor_results['outside_humid'], sensor_results['outside_pressure'])
+write_to_living_room(sensor_results['living_celsius'], sensor_results['living_humid'])
 
