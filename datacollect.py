@@ -22,7 +22,7 @@ def on_message(client, userdata, msg):
     collect_data = re.findall('[0-9.]{1,}', str(msg.payload))
     # convert collected data from string to rounded integer
     sensor_data = round(float(''.join(collect_data)))
-    #print(sensor_data)
+    # print(sensor_data)
     sensor_results[key] = sensor_data
 
 
@@ -34,14 +34,16 @@ def write_to_outside(celsius, humid, pressure):
     day = rightnow.day
     hour = rightnow.hour
     minute = rightnow.minute
-    conn = config.conn
+    connection = config.conn
     sql_insert_query = """INSERT INTO outside (pk, year, month, day, hour, minute, celsius, humid, pressure)
                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
     data_tuple = (timestamp, year, month, day, hour, minute, celsius, humid, pressure)
-    c = conn.cursor()
+    c = connection.cursor()
     c.execute(sql_insert_query, data_tuple)
-    conn.commit()
-   # conn.close()
+    connection.commit()
+
+
+# conn.close()
 
 def write_to_living_room(celsius, humid):
     rightnow = datetime.now()
@@ -58,12 +60,12 @@ def write_to_living_room(celsius, humid):
     c = conn.cursor()
     c.execute(sql_insert_query, data_tuple)
     conn.commit()
-    #conn.close()
+    # conn.close()
+
 
 sensors = config.sensors
 broker = config.mqtt_broker
 sensor_results = {}
-
 
 client = mqtt.Client()
 client.on_message = on_message
@@ -72,7 +74,7 @@ client.loop_start()
 
 # loop through sensors
 for key in sensors:
-    print(key)
+    # print(key)
     client.subscribe(sensors[key])
     time.sleep(.5)
 
