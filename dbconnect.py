@@ -1,5 +1,3 @@
-import sqlite3
-import mysql.connector
 from datetime import datetime
 import config as config
 
@@ -18,7 +16,7 @@ def write_to_outside(celsius, humid, pressure):
     c = conn.cursor()
     c.execute(sql_insert_query, data_tuple)
     conn.commit()
-   # conn.close()  Commented out because of SQL connection error. SQL connection closes in lower function.
+   # conn.close()
 
 def write_to_living_room(celsius, humid):
     rightnow = datetime.now()
@@ -35,4 +33,5 @@ def write_to_living_room(celsius, humid):
     c = conn.cursor()
     c.execute(sql_insert_query, data_tuple)
     conn.commit()
-    conn.close()
+    #conn.close()
+
